@@ -24,50 +24,59 @@ public class Robot implements RobotConstants {
                 int x;
                 salida=new String();
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case T_MOVER:
-    case T_TURNRIGHT:
-    case T_PONER:
-    case T_RECOGER:
-    case T_POP:
+    case 14:
+      jj_consume_token(14);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case T_TURNRIGHT:
-        jj_consume_token(T_TURNRIGHT);
-        jj_consume_token(13);
-        jj_consume_token(14);
-                                          world.turnRight();salida = "Command: Turnright";
+      case TURN:
+        jj_consume_token(TURN);
+        jj_consume_token(15);
+                                           world.turnRight();world.turnRight();world.turnRight();salida = "command: turnright";
         break;
-      case T_MOVER:
-        jj_consume_token(T_MOVER);
-        jj_consume_token(13);
+      case MOVE:
+        jj_consume_token(MOVE);
         x = numero();
-        jj_consume_token(14);
-                                                       world.moveForward(x);salida = "Command: Moveforward ";
+                                           world.moveForward(x);salida = "Command: Moveforward ";
         break;
-      case T_PONER:
-        jj_consume_token(T_PONER);
-        jj_consume_token(13);
+      case FACE:
+        jj_consume_token(FACE);
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case 16:
+          jj_consume_token(16);
+                              world.facingNorth();salida = "Command: facingNorth ";
+          break;
+        case 17:
+          jj_consume_token(17);
+                             world.facingSouth();salida = "Command: facingSouth ";
+          break;
+        case 18:
+          jj_consume_token(18);
+                            world.facingEast();salida = "Command: facingEast ";
+          break;
+        case 19:
+          jj_consume_token(19);
+                            world.facingWest();salida = "Command: facingWest ";
+          break;
+        default:
+          jj_la1[0] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+        break;
+      case PUT:
+        jj_consume_token(PUT);
         objetoPoner();
-        jj_consume_token(14);
         break;
-      case T_RECOGER:
-        jj_consume_token(T_RECOGER);
-        jj_consume_token(13);
+      case PICK:
+        jj_consume_token(PICK);
         objetoRecoger();
-        jj_consume_token(14);
-        break;
-      case T_POP:
-        jj_consume_token(T_POP);
-        jj_consume_token(13);
-        x = numero();
-        jj_consume_token(14);
-                                             world.popBalloons(x); salida = "Comando:  Pop";
         break;
       default:
-        jj_la1[0] = jj_gen;
+        jj_la1[1] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
-      jj_consume_token(15);
+      jj_consume_token(20);
+      jj_consume_token(21);
                   //  try {
                 //		 Thread.sleep(1);
                   //   } catch (InterruptedException e) {
@@ -77,8 +86,8 @@ public class Robot implements RobotConstants {
                         sistema.append(salida);
                         {if (true) return true;}
       break;
-    case 15:
-      jj_consume_token(15);
+    case 21:
+      jj_consume_token(21);
                {if (true) return true;}
       break;
     case 0:
@@ -86,7 +95,7 @@ public class Robot implements RobotConstants {
                          {if (true) return false;}
       break;
     default:
-      jj_la1[1] = jj_gen;
+      jj_la1[2] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -98,18 +107,16 @@ public class Robot implements RobotConstants {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case T_CHIPS:
       jj_consume_token(T_CHIPS);
-      jj_consume_token(16);
       f = numero();
-                                               world.putChips(f); salida = "Command:  Put Chips";
+                                            world.putChips(f); salida = "Command:  Put Chips";
       break;
     case T_BALLOONS:
       jj_consume_token(T_BALLOONS);
-      jj_consume_token(16);
       f = numero();
-                                                           world.putBalloons(f); salida = "Command:  Put Balloons";
+                                                        world.putBalloons(f); salida = "Command:  Put Balloons";
       break;
     default:
-      jj_la1[2] = jj_gen;
+      jj_la1[3] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -120,18 +127,18 @@ public class Robot implements RobotConstants {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case T_CHIPS:
       jj_consume_token(T_CHIPS);
-      jj_consume_token(16);
+      jj_consume_token(22);
       f = numero();
                                               world.pickChips(f);salida = "Command:  Pick chips";
       break;
     case T_BALLOONS:
       jj_consume_token(T_BALLOONS);
-      jj_consume_token(16);
+      jj_consume_token(22);
       f = numero();
                                                            world.grabBalloons(f);salida="Command:  Pick balloons";
       break;
     default:
-      jj_la1[3] = jj_gen;
+      jj_la1[4] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -167,13 +174,13 @@ public class Robot implements RobotConstants {
   public Token jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[4];
+  final private int[] jj_la1 = new int[5];
   static private int[] jj_la1_0;
   static {
       jj_la1_init_0();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x1f0,0x81f1,0x600,0x600,};
+      jj_la1_0 = new int[] {0xf0000,0x1f0,0x204001,0xc00,0xc00,};
    }
 
   /** Constructor with InputStream. */
@@ -187,7 +194,7 @@ public class Robot implements RobotConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 4; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 5; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -201,7 +208,7 @@ public class Robot implements RobotConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 4; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 5; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -211,7 +218,7 @@ public class Robot implements RobotConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 4; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 5; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -221,7 +228,7 @@ public class Robot implements RobotConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 4; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 5; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -230,7 +237,7 @@ public class Robot implements RobotConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 4; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 5; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -239,7 +246,7 @@ public class Robot implements RobotConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 4; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 5; i++) jj_la1[i] = -1;
   }
 
   private Token jj_consume_token(int kind) throws ParseException {
@@ -290,12 +297,12 @@ public class Robot implements RobotConstants {
   /** Generate ParseException. */
   public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[17];
+    boolean[] la1tokens = new boolean[23];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 5; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -304,7 +311,7 @@ public class Robot implements RobotConstants {
         }
       }
     }
-    for (int i = 0; i < 17; i++) {
+    for (int i = 0; i < 23; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

@@ -1,6 +1,5 @@
 /*
 Gramatica para el Robot:
- 
 Autor: Alejandro Arango
 Modificado por: Silvia Takahashi
 Modificado por: Juan Pablo Morales.
@@ -65,17 +64,14 @@ SKIP:
 TOKEN: /* Nombres de Comandos */
 {
 
-		   < MOVER:  "move">
-		|  < TURN: "turn">
-		|  < PONER: "put">
-		|  < RECOGER: "pick">
-		|  < DEFVAR: "defvar" >
-		|  < NAME: "name" >
-		|  < RUNDIRS: "rund-dirs" >
-		|  < FACE: "face" >
-		|  < MOVEDIRS: "move-dirs" >
-		|  < MOVEFACE: "move-face" >
-		|  < SKIP: "skip" >
+		< TURN:  "turn" >
+	|	< MOVE: "move" >
+	|	< FACE: "face" >
+	|	< PUT: "put" >
+	|	< PICK: "pick" >
+	|	< DEF: "defvar" >	
+		
+
 }
 
 TOKEN :
@@ -92,12 +88,6 @@ TOKEN :
 		|  	<#DIGIT: ["0"-"9"] >
 }
 
-TOKEN : /* Nombres de Estructuras */
-{
-	< CONDITION: <FACING> | <CANPUT> | <CANPICK> | <CANMOVE> | <NOT> >
-|	< IF: "if" <CONDITION > < BLOCK > <BLOCK > >
-|	< LOOP: "loop" <CONDITION > < BLOCK > <BLOCK > >
-| 	< REPEAT: "repeat" <CONDITION > < BLOCK > <BLOCK > >
 
 	boolean command(StringBuffer sistema) :
 	{	
@@ -109,7 +99,17 @@ TOKEN : /* Nombres de Estructuras */
 	
 	{
 		(
-		   <TURN> "(" ")" {world.turnRight();salida = "Command: Turnright";}
+		     "(" (<TURN> ":right" {world.turnRight();salida = "command: turnright";}
+		  |  < MOVE > x=numero()  {world.moveForward(x);salida = "Command: Moveforward ";}
+		  |  < FACE > (
+		    ":north" {world.facingNorth();salida = "Command: facingNorth ";}
+		  |":south" {world.facingSouth();salida = "Command: facingSouth ";}
+		  |":east" {world.facingEast();salida = "Command: facingEast ";}
+		  |":west" {world.facingWest();salida = "Command: facingWest ";}
+		  )
+		  |  < PUT >  objetoPoner()
+		  |  < PICK >  objetoRecoger()
+		)")"
 		) "\n" 
 
 		{
@@ -133,8 +133,8 @@ TOKEN : /* Nombres de Estructuras */
 		int f=1;	
 	}
 	{
-		( <T_CHIPS>    "," f=numero() {world.putChips(f); salida = "Command:  Put Chips"; })
-		|  	  ( <T_BALLOONS>   "," f=numero() {world.putBalloons(f); salida = "Command:  Put Balloons";})	 
+		( <T_CHIPS>     f=numero() {world.putChips(f); salida = "Command:  Put Chips"; })
+		|  	  ( <T_BALLOONS>    f=numero() {world.putBalloons(f); salida = "Command:  Put Balloons";})	 
 
 	}
 
