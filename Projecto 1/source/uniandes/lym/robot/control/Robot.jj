@@ -36,6 +36,9 @@ import java.awt.Point;
 import java.io.*;
 import java.util.Vector;
 import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @SuppressWarnings("serial")
 public class Robot 
@@ -50,6 +53,8 @@ public class Robot
 	}
 
 	String salida=new String();
+
+	HashMap<String, Integer> variables = new HashMap<String, Integer>();
 }
 PARSER_END(Robot)
 
@@ -88,19 +93,29 @@ TOKEN :
 		|  	<#DIGIT: ["0"-"9"] >
 }
 
+TOKEN :
+{
+		<PALABRA: (<CARACTER>)+ >
+		|  	<#CARACTER: ["a"-"z"]|["A"-"Z"] >
+}
 
 	boolean command(StringBuffer sistema) :
 	{	
 		
 		int x;
+		int xVariable;
 		salida=new String();
+		String variable;
+		
+
 		
 	}
 	
 	{
 		(
 		     "(" (<TURN> ":right" {world.turnRight();salida = "command: turnright";}
-		  |  < MOVE > x=numero()  {world.moveForward(x);salida = "Command: Moveforward ";}
+		  |  < MOVE > (x=numero() {world.moveForward(x);salida = "Command: Moveforward ";}
+		  |xVariable=variable() {world.moveForward(xVariable);salida = "Command: Moveforward ";}) 
 		  |  < FACE > (
 		    ":north" {world.facingNorth();salida = "Command: facingNorth ";}
 		  |":south" {world.facingSouth();salida = "Command: facingSouth ";}
@@ -109,8 +124,9 @@ TOKEN :
 		  )
 		  |  < PUT >  objetoPoner()
 		  |  < PICK >  objetoRecoger()
+		  |  < DEF > variable=palabra() x=numero() {variables.put(variable, x); }
 		)")"
-		) "\n" 
+		) 
 
 		{
 		  //  try {
@@ -177,4 +193,35 @@ TOKEN :
 		}
 	}
 
-	
+	int variable() throws Error:
+	{	
+		int total=1;
+	}
+	{
+		<PALABRA>
+		{
+			try 
+			{
+			  for (String v: variables.keySet())
+			  { 
+				if (v.equals(token.image))
+				{
+				  total  = variables.get(token.image);
+				}
+			} } 
+			catch (NumberFormatException ee) 
+			{
+				// Dada la forma de NUMERO, sabemos que solo puede tener d�gitos
+				// Por lo tanto, lo unico que podria pasar es que el numero sea muy grande
+				throw new Error("Number out of bounds: "+token.image+"!!");
+			}
+			return total;
+		}
+	}
+
+	String palabra():
+	{	
+	}
+	{
+		<PALABRA> {return token.image;}
+	}
