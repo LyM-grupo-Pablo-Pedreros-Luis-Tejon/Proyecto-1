@@ -268,7 +268,7 @@ TOKEN :
 		   {if (world.isUp()) {condi=true;}else { condi=false; }salida = "Command: canMoveNorth "; }
 		 | ":south"
 		   {if (world.isDown()) {condi=true;}else { condi=false; }salida = "Command: canMoveSouth "; }
-		 | ":east"
+		 | ":east" 
 		   {if (world.isRight()) {condi=true;}else { condi=false; }salida = "Command: canMoveEast "; }
 		 | ":west"
 		   {if (world.isLeft()) {condi=true;}else { condi=false; }salida = "Command: canMoveWest "; })
