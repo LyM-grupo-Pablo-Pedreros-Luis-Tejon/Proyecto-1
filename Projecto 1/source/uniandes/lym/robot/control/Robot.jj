@@ -74,7 +74,13 @@ TOKEN: /* Nombres de Comandos */
 	|	< FACE: "face" >
 	|	< PUT: "put" >
 	|	< PICK: "pick" >
-	|	< DEF: "defvar" >	
+	|	< DEF: "defvar" >
+	|   < EQUALS: "=" >
+	|   < MOVEDIR: "move-dir" >
+	|   < MOVEFACE: "move-face" >
+	|   < RUNDIRS: "run-dirs" >
+	|   < SALTAR: "skip" >
+	|   < IF: "if" >
 		
 
 }
@@ -106,6 +112,8 @@ TOKEN :
 		int xVariable;
 		salida=new String();
 		String variable;
+		String variable2;
+		boolean booleano;
 		
 
 		
@@ -113,19 +121,49 @@ TOKEN :
 	
 	{
 		(
-		     "(" (<TURN> ":right" {world.turnRight();salida = "command: turnright";}
+		     "(" (<TURN> (":right" {world.turnRight();salida = "Command: turnRight";}
+		  |":left" {world.turnRight();world.turnRight();world.turnRight();salida = "Command: turnLeft";}
+		  |":around" {world.turnRight();world.turnRight();salida = "Command: turnAround";} )
+		  
 		  |  < MOVE > (x=numero() {world.moveForward(x);salida = "Command: Moveforward ";}
-		  |xVariable=variable() {world.moveForward(xVariable);salida = "Command: Moveforward ";}) 
-		  |  < FACE > (
-		    ":north" {world.facingNorth();salida = "Command: facingNorth ";}
-		  |":south" {world.facingSouth();salida = "Command: facingSouth ";}
-		  |":east" {world.facingEast();salida = "Command: facingEast ";}
-		  |":west" {world.facingWest();salida = "Command: facingWest ";}
-		  )
-		  |  < PUT >  objetoPoner()
-		  |  < PICK >  objetoRecoger()
+		  |xVariable=variable() {world.moveForward(xVariable);salida = "Command: Moveforward ";})
+		   
+		  |  < FACE > (":north" {while(!(world.facingNorth())){world.turnRight();}salida = "Command: faceNorth ";}
+		  |":south" {while(!(world.facingSouth())){world.turnRight();}salida = "Command: faceSouth ";}
+		  |":east" {while(!(world.facingEast())) {world.turnRight();}salida = "Command: faceEast ";}
+		  |":west" {while(!(world.facingWest())) {world.turnRight();}salida = "Command: faceWest ";})
+		  
+		  |  < PUT > (":balloons" (x=numero(){world.putBalloons(x);salida = "Command: putBalloons ";}|xVariable=variable() {world.putBalloons(xVariable);salida = "Command: putBalloons ";})
+		  |":chips" (x=numero(){world.putChips(x);salida = "Command: putChips ";}|xVariable=variable() {world.putChips(xVariable);salida = "Command: putChips ";}))
+		  
+		  |  < PICK > (":balloons" (x=numero(){world.grabBalloons(x);salida = "Command: pickBalloons ";}|xVariable=variable() {world.grabBalloons(xVariable);salida = "Command: pickBalloons ";})
+		  |":chips" (x=numero(){world.pickChips(x);salida = "Command: pickChips ";}|xVariable=variable() {world.pickChips(xVariable);salida = "Command: pickChips ";}))
+		  
 		  |  < DEF > variable=palabra() x=numero() {variables.put(variable, x); }
-		)")"
+		  
+		  |  < EQUALS > variable=palabra() x=numero() {variables.put(variable, x); }
+		  
+		  |  < MOVEDIR > (x=numero() (":front"{world.moveForward(x);salida = "Command: moveForward ";}|":right"{world.turnRight();world.moveForward(x);world.turnRight();world.turnRight();world.turnRight();salida = "Command: moveRight ";}|":left"{world.turnRight();world.turnRight();world.turnRight();world.moveForward(x);world.turnRight();salida = "Command: moveLeft ";}|":back"{world.turnRight();world.turnRight();world.moveForward(x);world.turnRight();world.turnRight();salida = "Command: moveBack ";})
+		  |xVariable=variable() (":front"{world.moveForward(xVariable);salida = "Command: moveForward ";}|":right"{world.turnRight();world.moveForward(xVariable);world.turnRight();world.turnRight();world.turnRight();salida = "Command: moveRight ";}|":left"{world.turnRight();world.turnRight();world.turnRight();world.moveForward(xVariable);world.turnRight();salida = "Command: moveLeft ";}|":back"{world.turnRight();world.turnRight();world.moveForward(xVariable);world.turnRight();world.turnRight();salida = "Command: moveBack ";}))
+
+		  |  < MOVEFACE > (x=numero() (":north" {while(!(world.facingNorth())){world.turnRight();}world.moveForward(x);salida = "Command: faceNorth ";}
+		  |":south" {while(!(world.facingSouth())){world.turnRight();}world.moveForward(x);salida = "Command: faceSouth ";}
+		  |":east" {while(!(world.facingEast())) {world.turnRight();}world.moveForward(x);salida = "Command: faceEast ";}
+		  |":west" {while(!(world.facingWest())) {world.turnRight();}world.moveForward(x);salida = "Command: faceWest ";})
+		  |xVariable=variable() (":north" {while(!(world.facingNorth())){world.turnRight();}world.moveForward(xVariable);salida = "Command: faceNorth ";}
+		  |":south" {while(!(world.facingSouth())){world.turnRight();}world.moveForward(xVariable);salida = "Command: faceSouth ";}
+		  |":east" {while(!(world.facingEast())) {world.turnRight();}world.moveForward(xVariable);salida = "Command: faceEast ";}
+		  |":west" {while(!(world.facingWest())) {world.turnRight();}world.moveForward(xVariable);salida = "Command: faceWest ";}))
+
+		  |  < RUNDIRS > "("(" :front"{world.moveForward(1);salida = " Command: runDirections ";}|" :right"{world.turnRight();world.moveForward(1);world.turnRight();world.turnRight();world.turnRight();salida = " Command: runDirections ";}
+		  |" :left"{world.turnRight();world.turnRight();world.turnRight();world.moveForward(1);world.turnRight();salida = " Command: runDirections ";}|" :back"{world.turnRight();world.turnRight();world.moveForward(1);world.turnRight();world.turnRight();salida = " Command: runDirections ";}
+		  | ":front"{world.moveForward(1);salida = " Command: runDirections ";}|":right"{world.turnRight();world.moveForward(1);world.turnRight();world.turnRight();world.turnRight();salida = " Command: runDirections ";}
+		  |":left"{world.turnRight();world.turnRight();world.turnRight();world.moveForward(1);world.turnRight();salida = " Command: runDirections ";}|":back"{world.turnRight();world.turnRight();world.moveForward(1);world.turnRight();world.turnRight();salida = " Command: runDirections ";})+")"
+
+		  | < SALTAR > { salida = " Command: skip "; }
+		  
+		  /*| < IF > "("booleano=condicional()")"*/
+		  )")"
 		) 
 
 		{
@@ -142,26 +180,6 @@ TOKEN :
      |  "\n" { return true; }
 
 		| <EOF> {return false;} 
-	}
-
-	void objetoPoner() :
-	{
-		int f=1;	
-	}
-	{
-		( <T_CHIPS>     f=numero() {world.putChips(f); salida = "Command:  Put Chips"; })
-		|  	  ( <T_BALLOONS>    f=numero() {world.putBalloons(f); salida = "Command:  Put Balloons";})	 
-
-	}
-
-	void objetoRecoger() :
-	{
-		int f=1;	
-	}
-	{
-		( <T_CHIPS>   "," f=numero() {world.pickChips(f);salida = "Command:  Pick chips";})
-		|  	  ( <T_BALLOONS>   "," f=numero() {world.grabBalloons(f);salida="Command:  Pick balloons";})	 
-
 	}
 
 	
