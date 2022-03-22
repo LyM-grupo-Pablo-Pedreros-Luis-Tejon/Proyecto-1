@@ -55,6 +55,8 @@ public class Robot
 	String salida=new String();
 
 	HashMap<String, Integer> variables = new HashMap<String, Integer>();
+
+	boolean condi = true;
 }
 PARSER_END(Robot)
 
@@ -81,6 +83,11 @@ TOKEN: /* Nombres de Comandos */
 	|   < RUNDIRS: "run-dirs" >
 	|   < SALTAR: "skip" >
 	|   < IF: "if" >
+	| 	< FACING: "facing-p" >
+	| 	< CANPUT: "can-put-p" >
+	| 	< CANPICK: "can-pick-p" >
+	| 	< CANMOVE: "can-move-p" >
+	| 	< NOT: "not" >
 		
 
 }
@@ -115,7 +122,6 @@ TOKEN :
 		String variable2;
 		boolean booleano;
 		
-
 		
 	}
 	
@@ -143,9 +149,16 @@ TOKEN :
 		  
 		  |  < EQUALS > variable=palabra() x=numero() {variables.put(variable, x); }
 		  
-		  |  < MOVEDIR > (x=numero() (":front"{world.moveForward(x);salida = "Command: moveForward ";}|":right"{world.turnRight();world.moveForward(x);world.turnRight();world.turnRight();world.turnRight();salida = "Command: moveRight ";}|":left"{world.turnRight();world.turnRight();world.turnRight();world.moveForward(x);world.turnRight();salida = "Command: moveLeft ";}|":back"{world.turnRight();world.turnRight();world.moveForward(x);world.turnRight();world.turnRight();salida = "Command: moveBack ";})
-		  |xVariable=variable() (":front"{world.moveForward(xVariable);salida = "Command: moveForward ";}|":right"{world.turnRight();world.moveForward(xVariable);world.turnRight();world.turnRight();world.turnRight();salida = "Command: moveRight ";}|":left"{world.turnRight();world.turnRight();world.turnRight();world.moveForward(xVariable);world.turnRight();salida = "Command: moveLeft ";}|":back"{world.turnRight();world.turnRight();world.moveForward(xVariable);world.turnRight();world.turnRight();salida = "Command: moveBack ";}))
-
+		  |  < MOVEDIR > (x=numero()
+		  (":front"{world.moveForward(x);salida = "Command: moveForward ";}
+		  |":right"{world.turnRight();world.moveForward(x);world.turnRight();world.turnRight();world.turnRight();salida = "Command: moveRight ";}
+		  |":left"{world.turnRight();world.turnRight();world.turnRight();world.moveForward(x);world.turnRight();salida = "Command: moveLeft ";}
+		  |":back"{world.turnRight();world.turnRight();world.moveForward(x);world.turnRight();world.turnRight();salida = "Command: moveBack ";})
+		  |xVariable=variable()
+		  (":front"{world.moveForward(xVariable);salida = "Command: moveForward ";}
+		  |":right"{world.turnRight();world.moveForward(xVariable);world.turnRight();world.turnRight();world.turnRight();salida = "Command: moveRight ";}
+		  |":left"{world.turnRight();world.turnRight();world.turnRight();world.moveForward(xVariable);world.turnRight();salida = "Command: moveLeft ";}
+		  |":back"{world.turnRight();world.turnRight();world.moveForward(xVariable);world.turnRight();world.turnRight();salida = "Command: moveBack ";}))
 		  |  < MOVEFACE > (x=numero() (":north" {while(!(world.facingNorth())){world.turnRight();}world.moveForward(x);salida = "Command: faceNorth ";}
 		  |":south" {while(!(world.facingSouth())){world.turnRight();}world.moveForward(x);salida = "Command: faceSouth ";}
 		  |":east" {while(!(world.facingEast())) {world.turnRight();}world.moveForward(x);salida = "Command: faceEast ";}
@@ -154,18 +167,16 @@ TOKEN :
 		  |":south" {while(!(world.facingSouth())){world.turnRight();}world.moveForward(xVariable);salida = "Command: faceSouth ";}
 		  |":east" {while(!(world.facingEast())) {world.turnRight();}world.moveForward(xVariable);salida = "Command: faceEast ";}
 		  |":west" {while(!(world.facingWest())) {world.turnRight();}world.moveForward(xVariable);salida = "Command: faceWest ";}))
-
 		  |  < RUNDIRS > "("(" :front"{world.moveForward(1);salida = " Command: runDirections ";}|" :right"{world.turnRight();world.moveForward(1);world.turnRight();world.turnRight();world.turnRight();salida = " Command: runDirections ";}
 		  |" :left"{world.turnRight();world.turnRight();world.turnRight();world.moveForward(1);world.turnRight();salida = " Command: runDirections ";}|" :back"{world.turnRight();world.turnRight();world.moveForward(1);world.turnRight();world.turnRight();salida = " Command: runDirections ";}
 		  | ":front"{world.moveForward(1);salida = " Command: runDirections ";}|":right"{world.turnRight();world.moveForward(1);world.turnRight();world.turnRight();world.turnRight();salida = " Command: runDirections ";}
 		  |":left"{world.turnRight();world.turnRight();world.turnRight();world.moveForward(1);world.turnRight();salida = " Command: runDirections ";}|":back"{world.turnRight();world.turnRight();world.moveForward(1);world.turnRight();world.turnRight();salida = " Command: runDirections ";})+")"
-
 		  | < SALTAR > { salida = " Command: skip "; }
+		  | condition(sistema)
 		  
 		  /*| < IF > "("booleano=condicional()")"*/
 		  )")"
 		) 
-
 		{
 		  //  try {
 	    	//		 Thread.sleep(1);
@@ -176,20 +187,111 @@ TOKEN :
 			sistema.append(salida);
 			return true;
 		}
-
      |  "\n" { return true; }
-
 		| <EOF> {return false;} 
 	}
 
+	boolean condition(StringBuffer sistema) :
+	{	
+		
+		int x;
+		int xVariable;
+		salida=new String();
+		String variable;
+		String variable2;
+		boolean booleano;
+		
+		
+	}
 	
-	
+	{
+		(
+		     "(" < FACING >
+		     (":north" {
+		       if (world.facingNorth())
+		       {
+		         condi = true;
+		       }
+		       else
+		       {
+		         condi = false;
+		       }
+		       ;salida = "Command: facingNorth";}
+		   | ":south" {
+		     if (world.facingSouth())
+		       {
+		         condi = true;
+		       }
+		       else
+		       {
+		         condi = false;
+		       } ;salida = "Command: facingSouth"; }
+		   | ":east" {
+		     if (world.facingEast())
+		       {
+		         condi = true;
+		       }
+		       else
+		       {
+		         condi = false;
+		       } ;salida = "Command: facingEast"; }
+		   | ":west" {
+		     if (world.facingWest())
+		       {condi = true;}
+		       else{condi = false;} ;salida = "Command: facingWest"; })
+		   | < CANPUT >
+		   (":balloons"(x=numero()
+		   {try {world.putBalloons(x);world.grabBalloons(x);condi=true;} catch (Exception e) { condi=false; }
+		     salida = "Command: putBalloons ";}
+		   |xVariable=variable()
+		   {try {world.putBalloons(xVariable);world.grabBalloons(xVariable);condi=true;} catch (Exception e) { condi=false; };salida = "Command: putBalloons ";})
+		  |":chips" (x=numero()
+		   {try {world.putChips(x);world.pickChips(x);condi=true;} catch (Exception e) { condi=false; }
+		     salida = "Command: putBalloons ";}
+		   |xVariable=variable()
+		   {try {world.putChips(xVariable);world.pickChips(xVariable);condi=true;} catch (Exception e) { condi=false; };salida = "Command: putBalloons ";})
+		 )
+		 | < CANPICK >
+		   (":balloons"(x=numero()
+		   {try {world.grabBalloons(x);world.putBalloons(x);condi=true;} catch (Exception e) { condi=false; }
+		     salida = "Command: putBalloons ";}
+		   |xVariable=variable()
+		   {try {world.grabBalloons(xVariable);world.putBalloons(xVariable);condi=true;} catch (Exception e) { condi=false; };salida = "Command: putBalloons ";})
+		  |":chips" (x=numero()
+		   {try {world.pickChips(x);world.putChips(x);condi=true;} catch (Exception e) { condi=false; }
+		     salida = "Command: putBalloons ";}
+		   |xVariable=variable()
+		   {try {world.pickChips(xVariable);world.putChips(xVariable);condi=true;} catch (Exception e) { condi=false; };salida = "Command: putBalloons ";})
+		 )
+		 | < CANMOVE >
+		   (":north"
+		   {if (world.isUp()) {condi=true;}else { condi=false; }salida = "Command: canMoveNorth "; }
+		 | ":south"
+		   {if (world.isDown()) {condi=true;}else { condi=false; }salida = "Command: canMoveSouth "; }
+		 | ":east"
+		   {if (world.isRight()) {condi=true;}else { condi=false; }salida = "Command: canMoveEast "; }
+		 | ":west"
+		   {if (world.isLeft()) {condi=true;}else { condi=false; }salida = "Command: canMoveWest "; })
+		 | < NOT > condition(sistema)
+		  ")")
+		{
+		  //  try {
+	    	//		 Thread.sleep(1);
+	    	  //   } catch (InterruptedException e) {
+	    		//	        System.err.format("IOException: %s%n", e);
+	    		//	    }
+	    			 
+			sistema.append(salida);
+			return true;
+		}
+     |  "\n" { return true; }
+		| <EOF> {return false;} 
+	}
 
 	/**
 	 *  reconoce un numero entero sin signo
 	 * @return el valor entero correspondiente al valor reconocido
 	 */
-
 	int numero() throws Error:
 	{	
 		int total=1;
