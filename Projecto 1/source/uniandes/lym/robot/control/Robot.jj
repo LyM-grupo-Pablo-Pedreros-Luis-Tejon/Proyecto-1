@@ -51,6 +51,171 @@ public class Robot
 	void setWorld(RobotWorld w) {
 		world = (RobotWorldDec) w;	
 	}
+	void repeat(LinkedList<LinkedList<String>> lst, int num)
+	{
+	  int j = 0;
+	  while(j<num)
+	  {
+	    for(int i=0;i<lst.size();i++)
+	    {
+	      LinkedList<String> comm = lst.get(i);
+	      String command = comm.get(0);
+	      if(command.equals("move"))
+	      {
+	        world.moveForward(Integer.parseInt(comm.get(1)));
+	      }
+	      else if(command.equals("turn"))
+	      {
+	        if(comm.get(1).equals(":right"))
+	        { 
+	          world.turnRight();
+	        }
+	        else if(comm.get(1).equals(":left"))
+	        {
+	            world.turnRight();world.turnRight();world.turnRight();
+	        }
+	        else if(comm.get(1).equals(":around"))
+	        {
+	            world.turnRight();world.turnRight();
+	        }
+	        else
+	        {
+	          throw new Error("Cannot rotate.");
+	        }
+	      }
+	      else if(command.equals("face"))
+	      {
+	        if(comm.get(1).equals(":north"))
+	        { 
+	          while(!(world.facingNorth())){world.turnRight();}
+	        }
+	        else if(comm.get(1).equals(":south"))
+	        {
+	          while(!(world.facingSouth())){world.turnRight();}
+	        }
+	        else if(comm.get(1).equals(":east"))
+	        {
+	          while(!(world.facingEast())){world.turnRight();}
+	        }
+	        else if(comm.get(1).equals(":west"))
+	        {
+	          while(!(world.facingWest())){world.turnRight();}
+	        }
+	        else
+	        {
+	          throw new Error("Cannot rotate.");
+	        }
+	      }
+	      else if(command.equals("put"))
+	      {
+	        if(comm.get(1).equals(":balloons"))
+	        {
+	          world.putBalloons(Integer.parseInt(comm.get(2)));
+	        }
+	        else if(comm.get(1).equals(":chips"))
+	        {
+	          world.putChips(Integer.parseInt(comm.get(2)));
+	        }
+	        else
+	        {
+	          throw new Error("Cannot put.");
+	        }
+	      }
+	      else if(command.equals("pick"))
+	      {
+	        if(comm.get(1).equals(":balloons"))
+	        {
+	          world.grabBalloons(Integer.parseInt(comm.get(2)));
+	        }
+	        else if(comm.get(1).equals(":chips"))
+	        {
+	          world.pickChips(Integer.parseInt(comm.get(2)));
+	        }
+	        else
+	        {
+	          throw new Error("Cannot pick.");
+	        }
+	      }
+	      else if(command.equals("move-dir"))
+	      {
+	        if(comm.get(2).equals(":right"))
+	        { 
+	          world.turnRight();world.moveForward(Integer.parseInt(comm.get(1)));world.turnRight();world.turnRight();world.turnRight();
+	        }
+	        else if(comm.get(2).equals(":left"))
+	        {
+	            world.turnRight();world.turnRight();world.turnRight();world.moveForward(Integer.parseInt(comm.get(1)));world.turnRight();
+	        }
+	        else if(comm.get(2).equals(":front"))
+	        {
+	            world.moveForward(Integer.parseInt(comm.get(1)));
+	        }
+	        else if(comm.get(2).equals(":back"))
+	        {
+	            world.turnRight();world.turnRight();world.moveForward(Integer.parseInt(comm.get(1)));world.turnRight();world.turnRight();
+	        }
+	        else
+	        {
+	          throw new Error("Cannot move.");
+	        }
+	      }
+	      else if(command.equals("move-face"))
+	      {
+	        if(comm.get(2).equals(":north"))
+	        { 
+	          while(!(world.facingNorth())){world.turnRight();}world.moveForward(Integer.parseInt(comm.get(1)));
+	        }
+	        else if(comm.get(2).equals(":south"))
+	        {
+	          while(!(world.facingSouth())){world.turnRight();}world.moveForward(Integer.parseInt(comm.get(1)));
+	        }
+	        else if(comm.get(2).equals(":east"))
+	        {
+	          while(!(world.facingEast())){world.turnRight();}world.moveForward(Integer.parseInt(comm.get(1)));
+	        }
+	        else if(comm.get(2).equals(":west"))
+	        {
+	          while(!(world.facingWest())){world.turnRight();}world.moveForward(Integer.parseInt(comm.get(1)));
+	        }
+	        else
+	        {
+	          throw new Error("Cannot move.");
+	        }
+	      }
+	      else if(command.equals("skip"))
+	      {
+	       
+	      }
+	      else if(command.equals("run-dirs"))
+	      {
+	        for(int h=1;h<lst.size();h++)
+	        {
+	          if(comm.get(h).equals(":right"))
+	        { 
+	          world.turnRight();world.moveForward(1);world.turnRight();world.turnRight();world.turnRight();
+	        }
+	        else if(comm.get(h).equals(":left"))
+	        {
+	            world.turnRight();world.turnRight();world.turnRight();world.moveForward(1);world.turnRight();
+	        }
+	        else if(comm.get(h).equals(":front"))
+	        {
+	            world.moveForward(1);
+	        }
+	        else if(comm.get(h).equals(":back"))
+	        {
+	            world.turnRight();world.turnRight();world.moveForward(1);world.turnRight();world.turnRight();
+	        }
+	        else
+	        {
+	          throw new Error("Cannot move.");
+	        }
+	        }
+	      }
+	    }
+	    j++;
+	  }
+	}
 
 	String salida=new String();
 
@@ -81,6 +246,8 @@ TOKEN: /* Nombres de Comandos */
 	|   < RUNDIRS: "run-dirs" >
 	|   < SALTAR: "skip" >
 	|   < IF: "if" >
+	|   < CONDICIONAL: "("("facing-p"|"can-put-p"|"can-pick-p"|"can-move-p"|"not" ("facing-p"|"can-put-p"|"can-pick-p"|"can-move-p"))")" >
+	|   < REPEAT: "repeat" >
 		
 
 }
@@ -105,7 +272,7 @@ TOKEN :
 		|  	<#CARACTER: ["a"-"z"]|["A"-"Z"] >
 }
 
-	boolean command(StringBuffer sistema) :
+	boolean command(StringBuffer sistema):
 	{	
 		
 		int x;
@@ -121,7 +288,7 @@ TOKEN :
 	
 	{
 		(
-		     "(" (<TURN> (":right" {world.turnRight();salida = "Command: turnRight";}
+		     "(" (< TURN > (":right" {world.turnRight();salida = "Command: turnRight";}
 		  |":left" {world.turnRight();world.turnRight();world.turnRight();salida = "Command: turnLeft";}
 		  |":around" {world.turnRight();world.turnRight();salida = "Command: turnAround";} )
 		  
@@ -141,7 +308,7 @@ TOKEN :
 		  
 		  |  < DEF > variable=palabra() x=numero() {variables.put(variable, x); }
 		  
-		  |  < EQUALS > variable=palabra() x=numero() {variables.put(variable, x); }
+		  |  < EQUALS > variable=palabra() x=numero() {variables.put(variable, x);}
 		  
 		  |  < MOVEDIR > (x=numero() (":front"{world.moveForward(x);salida = "Command: moveForward ";}|":right"{world.turnRight();world.moveForward(x);world.turnRight();world.turnRight();world.turnRight();salida = "Command: moveRight ";}|":left"{world.turnRight();world.turnRight();world.turnRight();world.moveForward(x);world.turnRight();salida = "Command: moveLeft ";}|":back"{world.turnRight();world.turnRight();world.moveForward(x);world.turnRight();world.turnRight();salida = "Command: moveBack ";})
 		  |xVariable=variable() (":front"{world.moveForward(xVariable);salida = "Command: moveForward ";}|":right"{world.turnRight();world.moveForward(xVariable);world.turnRight();world.turnRight();world.turnRight();salida = "Command: moveRight ";}|":left"{world.turnRight();world.turnRight();world.turnRight();world.moveForward(xVariable);world.turnRight();salida = "Command: moveLeft ";}|":back"{world.turnRight();world.turnRight();world.moveForward(xVariable);world.turnRight();world.turnRight();salida = "Command: moveBack ";}))
@@ -161,8 +328,10 @@ TOKEN :
 		  |":left"{world.turnRight();world.turnRight();world.turnRight();world.moveForward(1);world.turnRight();salida = " Command: runDirections ";}|":back"{world.turnRight();world.turnRight();world.moveForward(1);world.turnRight();world.turnRight();salida = " Command: runDirections ";})+")"
 
 		  | < SALTAR > { salida = " Command: skip "; }
-		  
-		  /*| < IF > "("booleano=condicional()")"*/
+
+		  | < REPEAT >  {LinkedList<LinkedList<String>> toRepeat = new LinkedList<LinkedList<String>>();LinkedList<String> com = new LinkedList<String>();}
+		  (x=numero() (com=commandsRepeat() {toRepeat.addLast(com);})+ {repeat(toRepeat,x);salida = "Command: repeat"; }
+		  |xVariable=variable() (com=commandsRepeat() {toRepeat.addLast(com);})+ {repeat(toRepeat,xVariable);salida = "Command: repeat"; })
 		  )")"
 		) 
 
@@ -211,6 +380,14 @@ TOKEN :
 		}
 	}
 
+	public String palabra():
+	{
+	  ;
+	}
+	{
+		<PALABRA> {return token.image;}
+	}
+
 	int variable() throws Error:
 	{	
 		int total=1;
@@ -237,9 +414,23 @@ TOKEN :
 		}
 	}
 
-	String palabra():
-	{	
-	}
-	{
-		<PALABRA> {return token.image;}
-	}
+	LinkedList<String> commandsRepeat():
+{
+  int x;
+  LinkedList<String> comms = new LinkedList<String>();
+}
+{
+  "("(< MOVE > {comms.addLast(token.image);} (x=numero() | x=variable()) {comms.addLast(Integer.toString(x));}
+  | < TURN > {comms.addLast(token.image);} (":right" {comms.addLast(":right");}|":left" {comms.addLast(":left");}|":around" {comms.addLast(":around");})
+  | < FACE > {comms.addLast(token.image);} (":north" {comms.addLast(":north");}|":east" {comms.addLast(":east");}|":west" {comms.addLast(":west");}|":south" {comms.addLast(":south");})
+  |  < PUT > {comms.addLast(token.image);} (":balloons"{comms.addLast(":balloons");}|":chips"{comms.addLast(":chips");}) (x=numero()|x=variable()) {comms.addLast(Integer.toString(x));}
+  |  < PICK > {comms.addLast(token.image);} (":balloons"{comms.addLast(":balloons");}|":chips"{comms.addLast(":chips");}) (x=numero()|x=variable()) {comms.addLast(Integer.toString(x));}
+  | < MOVEDIR > {comms.addLast(token.image);} (x=numero() | x=variable()) {comms.addLast(Integer.toString(x));} (":right" {comms.addLast(":right");}|":left" {comms.addLast(":left");}|":front" {comms.addLast(":front");}|":back" {comms.addLast(":back");})
+  | < MOVEFACE > {comms.addLast(token.image);} (x=numero() | x=variable()) {comms.addLast(Integer.toString(x));} (":north" {comms.addLast(":north");}|":south" {comms.addLast(":south");}|":east" {comms.addLast(":east");}|":west" {comms.addLast(":west");})
+  | < RUNDIRS > {comms.addLast(token.image);} "(" (":right" {comms.addLast(":right");}|":left" {comms.addLast(":left");}|":front" {comms.addLast(":front");}|":back" {comms.addLast(":back");})+ ")"
+  | < SALTAR > {comms.addLast(token.image);}	  
+  )")" {return comms;}
+
+}
+
+	
