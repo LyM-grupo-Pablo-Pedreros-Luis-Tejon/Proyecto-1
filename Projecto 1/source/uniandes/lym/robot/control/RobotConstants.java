@@ -45,17 +45,35 @@ public interface RobotConstants {
   /** RegularExpression Id. */
   int NOT = 20;
   /** RegularExpression Id. */
-  int T_BALLOONS = 21;
+  int REPEAT = 21;
   /** RegularExpression Id. */
-  int T_CHIPS = 22;
+  int COMMANDS = 22;
   /** RegularExpression Id. */
-  int NUMERO = 23;
+  int NORTH = 23;
   /** RegularExpression Id. */
-  int DIGIT = 24;
+  int SOUTH = 24;
   /** RegularExpression Id. */
-  int PALABRA = 25;
+  int EAST = 25;
   /** RegularExpression Id. */
-  int CARACTER = 26;
+  int WEST = 26;
+  /** RegularExpression Id. */
+  int RIGHT = 27;
+  /** RegularExpression Id. */
+  int LEFT = 28;
+  /** RegularExpression Id. */
+  int AROUND = 29;
+  /** RegularExpression Id. */
+  int T_BALLOONS = 30;
+  /** RegularExpression Id. */
+  int T_CHIPS = 31;
+  /** RegularExpression Id. */
+  int NUMERO = 32;
+  /** RegularExpression Id. */
+  int DIGIT = 33;
+  /** RegularExpression Id. */
+  int PALABRA = 34;
+  /** RegularExpression Id. */
+  int CARACTER = 35;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -83,6 +101,15 @@ public interface RobotConstants {
     "\"can-pick-p\"",
     "\"can-move-p\"",
     "\"not\"",
+    "\"repeat\"",
+    "<COMMANDS>",
+    "\":north\"",
+    "\":south\"",
+    "\":east\"",
+    "\":west\"",
+    "\":right\"",
+    "\":left\"",
+    "\":around\"",
     "\"BALLOONS\"",
     "\"CHIPS\"",
     "<NUMERO>",
@@ -90,13 +117,6 @@ public interface RobotConstants {
     "<PALABRA>",
     "<CARACTER>",
     "\"(\"",
-    "\":right\"",
-    "\":left\"",
-    "\":around\"",
-    "\":north\"",
-    "\":south\"",
-    "\":east\"",
-    "\":west\"",
     "\":balloons\"",
     "\":chips\"",
     "\":front\"",
